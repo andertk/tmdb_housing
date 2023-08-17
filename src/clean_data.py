@@ -9,7 +9,10 @@ def clean_data():
         pd.read_csv(RAW_MOVIES_PATH, engine="python", index_col=0)
         .astype({"id": "object"})
         .assign(release_date=lambda x: pd.to_datetime(x["release_date"], errors="coerce"))
-        .dropna(subset=["release_date", "budget"])
+        .query("vote_count > 0")
+        .query("budget > 0")
+        .query("revenue > 0")
+        .set_index("id")
     )
     return clean_data
 
