@@ -9,6 +9,7 @@ def clean_data():
         pd.read_csv(RAW_MOVIES_PATH, engine="python", index_col=0)
         .astype({"id": "object"})
         .assign(release_date=lambda x: pd.to_datetime(x["release_date"], errors="coerce"))
+        .dropna(subset=["release_date", "budget"])
     )
     return clean_data
 
