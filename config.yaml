@@ -1,7 +1,7 @@
 features:
   - vote_count
   - popularity
-  - run_time
+  - runtime
   - Horror
   - War
   - History
