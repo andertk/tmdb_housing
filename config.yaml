@@ -1,0 +1,14 @@
+features:
+  - vote_count
+  - popularity
+  - run_time
+  - Horror
+  - War
+  - History
+  - Dimension Films
+  - Dune Entertainment
+  - Screen Gems
+  - United Artists
+  - Film4 Productions
+
+target: vote_average
