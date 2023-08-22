@@ -10,7 +10,8 @@ class ModelEvaluator:
         self.yhat_name = yhat.name
 
     def yhat_y_scatter(self, **kwargs):
-        self.df.plot.scatter(self.yhat_name, self.y_name, **kwargs)
+        ax = self.df.plot.scatter(self.yhat_name, self.y_name, **kwargs)
+        ax.axline(xy1=(0, 0), slope=1, c="black")
         plt.show()
 
     def yhat_res_scatter(self, **kwargs):
