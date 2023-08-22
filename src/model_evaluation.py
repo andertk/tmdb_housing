@@ -1,31 +1,38 @@
 import matplotlib.pyplot as plt
 import pandas as pd
-from pandas.plotting import scatter_matrix
 
 
 class ModelEvaluator:
     def __init__(self, X: pd.DataFrame, y: pd.Series, yhat: pd.Series):
-        self.X = X
-        self.y = y
-        self.yhat = yhat
-        self.res = pd.Series(y - yhat, name="residual")
+        self.df = X.join(y).join(yhat).assign(residual=y-yhat)
+        self.x_names = X.columns.to_list()
+        self.y_name = y.name
+        self.yhat_name = yhat.name
 
     def yhat_y_scatter(self, **kwargs):
-        plt.scatter(self.yhat, self.y, **kwargs)
-        plt.xlabel(self.yhat.name)
-        plt.ylabel(self.y.name)
+        self.df.plot.scatter(self.yhat_name, self.y_name, **kwargs)
         plt.show()
 
     def yhat_res_scatter(self, **kwargs):
-        plt.scatter(self.yhat, self.yhat, **kwargs)
-        plt.xlabel(self.yhat.name)
-        plt.ylabel("Residuals")
+        self.df.plot.scatter(self.yhat_name, "residual", **kwargs)
         plt.show()
 
     def res_kde(self, **kwargs):
-        self.res.plot.kde(**kwargs, title="Residuals")
+        self.df["residual"].plot.kde(**kwargs, title="Residuals")
         plt.show()
 
-    def scatter_plot_res(self, **kwargs):
-        scatter_matrix(self.X.join(self.res), **kwargs)
-        plt.show()
+    def x_y_grid(self, x_cols=None, scatter_kws=None, line_kws=None):
+        if x_cols is None:
+            x_cols = self.x_names
+
+        if scatter_kws is None:
+            scatter_kws = {}
+
+        if line_kws is None:
+            line_kws = {}
+        
+        for i in x_cols:
+            df_i = self.df.sort_values(i)
+            ax = df_i.plot.scatter(i, self.y_name, **scatter_kws)
+            df_i.plot.line(i, self.yhat_name, c="black", ax=ax, **line_kws)
+            plt.show()
