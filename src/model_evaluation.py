@@ -29,10 +29,10 @@ class ModelEvaluator:
             scatter_kws = {}
 
         if line_kws is None:
-            line_kws = {}
+            line_kws = {"c": "black"}
         
         for i in x_cols:
             df_i = self.df.sort_values(i)
             ax = df_i.plot.scatter(i, self.y_name, **scatter_kws)
-            df_i.plot.line(i, self.yhat_name, c="black", ax=ax, **line_kws)
+            df_i.plot.line(i, self.yhat_name, ax=ax, **line_kws)
             plt.show()
