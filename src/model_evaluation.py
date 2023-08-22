@@ -17,8 +17,8 @@ class ModelEvaluator:
         plt.show()
 
     def yhat_res_scatter(self, **kwargs):
-        plt.scatter(self.y, self.yhat, **kwargs)
-        plt.xlabel(self.y.name)
+        plt.scatter(self.yhat, self.yhat, **kwargs)
+        plt.xlabel(self.yhat.name)
         plt.ylabel("Residuals")
         plt.show()
 
