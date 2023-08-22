@@ -10,7 +10,8 @@ class ModelEvaluator:
         self.yhat_name = yhat.name
 
     def yhat_y_scatter(self, **kwargs):
-        self.df.plot.scatter(self.yhat_name, self.y_name, **kwargs)
+        ax = self.df.plot.scatter(self.yhat_name, self.y_name, **kwargs)
+        ax.axline(xy1=(0, 0), slope=1, c="black")
         plt.show()
 
     def yhat_res_scatter(self, **kwargs):
@@ -29,10 +30,10 @@ class ModelEvaluator:
             scatter_kws = {}
 
         if line_kws is None:
-            line_kws = {}
+            line_kws = {"c": "black"}
         
         for i in x_cols:
             df_i = self.df.sort_values(i)
             ax = df_i.plot.scatter(i, self.y_name, **scatter_kws)
-            df_i.plot.line(i, self.yhat_name, c="black", ax=ax, **line_kws)
+            df_i.plot.line(i, self.yhat_name, ax=ax, **line_kws)
             plt.show()
