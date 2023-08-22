@@ -4,6 +4,8 @@ from sklearn.linear_model import LinearRegression
 from src.clean_data import clean_data
 from sklearn.preprocessing import PowerTransformer
 from sklearn.pipeline import Pipeline
+from sklearn.metrics import r2_score
+
 from numpy import log10
 
 from src.model_evaluation import ModelEvaluator
@@ -22,8 +24,11 @@ model.fit(X, y)
 yhat = pd.Series(model.predict(X), index=y.index, name="yhat")
 
 p = ModelEvaluator(X.filter(["vote_count", "popularity"]).apply(log10), y, yhat)
-p.scatter_plot_res(figsize=(12, 12))
+p.x_y_grid()
+p.yhat_y_scatter()
 p.res_kde()
 p.yhat_res_scatter(alpha=0.5, s=15)
 
 
+r2_score(y, yhat)
+model['ols'].coef_
