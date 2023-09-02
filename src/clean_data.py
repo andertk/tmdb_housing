@@ -7,7 +7,7 @@ def get_dummies_from_lists(x):
         .apply(eval)
         .explode()
         .pipe(pd.get_dummies)
-        .groupby("id")
+        .groupby('id')
         .sum()
         .clip(upper=1)
     )
@@ -15,16 +15,16 @@ def get_dummies_from_lists(x):
 
 def clean_data(raw_path):
     df = (
-        pd.read_csv(raw_path, engine="python", index_col=0)
-        .astype({"id": "object"})
-        .assign(release_date=lambda x: pd.to_datetime(x["release_date"], errors="coerce"))
-        .query("vote_count > 0")
-        .query("budget > 0")
-        .query("revenue > 0")
-        .set_index("id")
+        pd.read_csv(raw_path, engine='python', index_col=0)
+        .astype({'id': 'object'})
+        .assign(release_date=lambda x: pd.to_datetime(x['release_date'], errors='coerce'))
+        .query('vote_count > 0')
+        .query('budget > 0')
+        .query('revenue > 0')
+        .set_index('id')
     )
 
-    genres = get_dummies_from_lists(df["genres"])
-    production_companies = get_dummies_from_lists(df["production_companies"])
+    genres = get_dummies_from_lists(df['genres'])
+    production_companies = get_dummies_from_lists(df['production_companies'])
 
     return pd.concat([df, genres, production_companies], axis=1)

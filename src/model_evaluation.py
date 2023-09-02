@@ -11,15 +11,15 @@ class ModelEvaluator:
 
     def yhat_y_scatter(self, **kwargs):
         ax = self.df.plot.scatter(self.yhat_name, self.y_name, **kwargs)
-        ax.axline(xy1=(0, 0), slope=1, c="black")
+        ax.axline(xy1=(0, 0), slope=1, c='black')
         plt.show()
 
     def yhat_res_scatter(self, **kwargs):
-        self.df.plot.scatter(self.yhat_name, "residual", **kwargs)
+        self.df.plot.scatter(self.yhat_name, 'residual', **kwargs)
         plt.show()
 
     def res_kde(self, **kwargs):
-        self.df["residual"].plot.kde(**kwargs, title="Residuals")
+        self.df['residual'].plot.kde(**kwargs, title='Residuals')
         plt.show()
 
     def x_y_grid(self, x_cols=None, scatter_kws=None, line_kws=None):
@@ -30,7 +30,7 @@ class ModelEvaluator:
             scatter_kws = {}
 
         if line_kws is None:
-            line_kws = {"c": "black"}
+            line_kws = {'c': 'black'}
         
         for i in x_cols:
             df_i = self.df.sort_values(i)

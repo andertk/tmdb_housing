@@ -10,20 +10,20 @@ from numpy import log10
 
 from src.model_evaluation import ModelEvaluator
 
-with open("config.yaml", "r") as f:
+with open('config.yaml', 'r') as f:
     config = yaml.load(f, Loader=yaml.FullLoader)
 
 df = pd.read_csv(config['clean_path'], index_col='id')
 y = df[config['target']]
 X = df[config['features']]
 
-pipe = [("pt", PowerTransformer()), ("ols", LinearRegression())]
+pipe = [('pt', PowerTransformer()), ('ols', LinearRegression())]
 model = Pipeline(pipe)
 model.fit(X, y)
 
-yhat = pd.Series(model.predict(X), index=y.index, name="yhat")
+yhat = pd.Series(model.predict(X), index=y.index, name='yhat')
 
-p = ModelEvaluator(X.filter(["vote_count", "popularity"]).apply(log10), y, yhat)
+p = ModelEvaluator(X.filter(['vote_count', 'popularity']).apply(log10), y, yhat)
 p.x_y_grid()
 p.yhat_y_scatter()
 p.res_kde()
