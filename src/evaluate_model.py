@@ -2,6 +2,22 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 
+def evaluate_convergence(draws):
+    acceptance_rate = (draws.diff() != 0).mean()
+    print(acceptance_rate)
+
+    corr_df = draws.corr()
+    print(corr_df)
+
+    n_cols = 4
+    draws.plot(
+        subplots=True, 
+        layout=(draws.shape[1] // n_cols + 1, n_cols),
+        figsize=(16, 8)
+    )
+    plt.show()
+
+
 class ModelEvaluator:
     def __init__(self, X: pd.DataFrame, y: pd.Series, yhat: pd.Series):
         self.df = X.join(y).join(yhat).assign(residual=y-yhat)
