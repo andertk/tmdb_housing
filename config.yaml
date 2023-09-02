@@ -15,3 +15,6 @@ target: vote_average
 
 raw_path: data/raw/top_1000_popular_movies_tmdb.csv
 clean_path: data/clean/movies.csv
+
+n_draws: 200
+burn_in: 10

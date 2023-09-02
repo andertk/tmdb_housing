@@ -97,6 +97,6 @@ def train_bayesian_ols():
     ]
 
     bayesian_ols = BayesianOLS(X, y, param_groups)
-    bayesian_ols.simulate_draws(n_draws=200, burn_in=10)
+    bayesian_ols.simulate_draws(config["n_draws"], config["burn_in"])
     pred_df = bayesian_ols.predict(X)
     print(pred_df)
