@@ -2,6 +2,8 @@ import pandas as pd
 from scipy.stats import norm, gamma, uniform
 from tqdm import tqdm
 
+from src.config import config
+
 
 class BayesianOLS:
     def __init__(self, X, y, param_groups, add_intercept=True) -> None:
@@ -62,10 +64,10 @@ class BayesianOLS:
         return pred_df
 
 
-def train_bayesian_ols(clean_path, features, target):
-    df = pd.read_csv(clean_path, index_col='id')
-    X = df.filter(features)
-    y = df[target]
+def train_bayesian_ols():
+    df = pd.read_csv(config["clean_path"], index_col='id')
+    X = df.filter(config["features"])
+    y = df[config["target"]]
 
     param_groups = [
         {
