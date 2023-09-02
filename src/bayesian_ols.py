@@ -15,27 +15,27 @@ class BayesianOLS:
         if add_intercept:
             self.X.insert(0, 'intercept', 1)
 
-    def likelihood(self, theta):
+    def likelihood(self, theta) -> float:
         beta = theta.drop('sigma2')
         sigma2 = theta.loc['sigma2']
         return norm.logpdf(self.y, loc=self.X.dot(beta.T), scale=sigma2).sum()
 
-    def prior(self, theta):
+    def prior(self, theta) -> float:
         return sum([
             i["prior"].logpdf(theta.loc[i["parameters"]]).sum() 
             for i in self.param_groups
         ])
 
-    def posterior(self, theta):
+    def posterior(self, theta) -> float:
         return self.likelihood(theta) + self.prior(theta)
 
-    def get_init(self):
+    def get_init(self) -> pd.Series:
         return pd.concat([
             pd.Series(i["prior"].mean(), index=i["parameters"])
             for i in self.param_groups
         ])
 
-    def simulate_draws(self, n_draws=1000, burn_in=0):
+    def simulate_draws(self, n_draws=1000, burn_in=0) -> None:
         n = n_draws + burn_in
         init = self.get_init()
         draws = pd.DataFrame(index=range(n), columns=init.index, dtype="float")
@@ -51,7 +51,7 @@ class BayesianOLS:
                 draws.loc[i, j["parameters"]] = prop.loc[j["parameters"]] if accept else prev.loc[j["parameters"]]
         self.draws = draws.loc[burn_in:].reset_index(drop=True)
 
-    def predict(self, X):
+    def predict(self, X) -> pd.DataFrame:
         X = X.copy()
         beta = self.draws.drop(columns='sigma2')
         sigma2 = self.draws['sigma2']
