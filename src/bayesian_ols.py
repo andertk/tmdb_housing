@@ -69,31 +69,32 @@ def train_bayesian_ols(clean_path, features, target):
 
     param_groups = [
         {
-            "parameters": ['intercept', 'vote_count', 'popularity', 'runtime'],
+            "parameters": ['intercept'],
             "prior": norm(loc=0, scale=1),
-            "proposal": norm(scale=100)
+            "proposal": norm(scale=0.01)
         },
         {
-            "parameters": ['Horror', 'War', 'History'],
+            "parameters": ['vote_count', 'popularity', 'runtime'],
             "prior": norm(loc=0, scale=1),
-            "proposal": norm(scale=100)
+            "proposal": norm(scale=[0.01]*3)
         },
         {
             "parameters": [
+                'Horror', 'War', 'History',
                 'Dimension Films', 'Dune Entertainment', 'Screen Gems',
                 'United Artists', 'Film4 Productions'
             ],
             "prior": norm(loc=0, scale=1),
-            "proposal": norm(scale=100)
+            "proposal": norm(scale=[0.01]*8)
         },
         {
             "parameters": ['sigma2'],
             "prior": gamma(a=1, scale=3),
-            "proposal": norm(scale=100)
+            "proposal": norm(scale=0.015)
         }
     ]
 
     bayesian_ols = BayesianOLS(X, y, param_groups)
-    bayesian_ols.simulate_draws(n_draws=100, burn_in=10)
+    bayesian_ols.simulate_draws(n_draws=200, burn_in=10)
     pred_df = bayesian_ols.predict(X)
     print(pred_df)
