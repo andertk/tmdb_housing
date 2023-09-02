@@ -1,19 +1,17 @@
 import pandas as pd
 
 
-def get_dummies_from_lists(x):
-    return (
-        x
-        .apply(eval)
-        .explode()
-        .pipe(pd.get_dummies)
-        .groupby('id')
-        .sum()
-        .clip(upper=1)
-    )
-
-
-def clean_data(raw_path):
+def clean_data(raw_path, clean_path):
+    def get_dummies_from_lists(x):
+        return (
+            x
+            .apply(eval)
+            .explode()
+            .pipe(pd.get_dummies)
+            .groupby('id')
+            .sum()
+            .clip(upper=1)
+        )
     df = (
         pd.read_csv(raw_path, engine='python', index_col=0)
         .astype({'id': 'object'})
@@ -27,4 +25,5 @@ def clean_data(raw_path):
     genres = get_dummies_from_lists(df['genres'])
     production_companies = get_dummies_from_lists(df['production_companies'])
 
-    return pd.concat([df, genres, production_companies], axis=1)
+    df = pd.concat([df, genres, production_companies], axis=1)
+    df.to_csv(clean_path)
