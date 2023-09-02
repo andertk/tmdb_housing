@@ -8,7 +8,7 @@ from sklearn.metrics import r2_score
 
 from numpy import log10
 
-from src.model_evaluation import ModelEvaluator
+from src.evaluate_model import ModelEvaluator
 
 with open('config.yaml', 'r') as f:
     config = yaml.load(f, Loader=yaml.FullLoader)
