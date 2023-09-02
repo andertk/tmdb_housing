@@ -33,12 +33,13 @@ class BayesianOLS:
             for i in self.param_groups
         ])
 
-    def simulate_draws(self, n_draws=1000):
+    def simulate_draws(self, n_draws=1000, burn_in=0):
+        n = n_draws + burn_in
         init = self.get_init()
-        draws = pd.DataFrame(index=range(n_draws), columns=init.index, dtype="float")
+        draws = pd.DataFrame(index=range(n), columns=init.index, dtype="float")
         draws.loc[0] = init
 
-        for i in tqdm(range(1, n_draws)):
+        for i in tqdm(range(1, n), initial=1, total=n):
             prev = draws.loc[i-1].copy()
             for j in self.param_groups:
                 prop = prev.copy()
@@ -46,7 +47,7 @@ class BayesianOLS:
                 log_ratio = self.posterior(prop) - self.posterior(prev)
                 accept = log_ratio > uniform.rvs()
                 draws.loc[i, j["parameters"]] = prop.loc[j["parameters"]] if accept else prev.loc[j["parameters"]]
-        self.draws = draws
+        self.draws = draws.loc[burn_in:].reset_index(drop=True)
 
     def predict(self, X):
         X = X.copy()
@@ -93,6 +94,6 @@ def train_bayesian_ols(clean_path, features, target):
     ]
 
     bayesian_ols = BayesianOLS(X, y, param_groups)
-    bayesian_ols.simulate_draws(n_draws=100)
+    bayesian_ols.simulate_draws(n_draws=100, burn_in=10)
     pred_df = bayesian_ols.predict(X)
     print(pred_df)
