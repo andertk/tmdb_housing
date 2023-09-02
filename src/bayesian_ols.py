@@ -1,7 +1,6 @@
 import pandas as pd
 from scipy.stats import norm, gamma, uniform
 from tqdm import tqdm
-from joblib import load, dump
 
 
 class BayesianOLS:
