@@ -22,7 +22,7 @@ class BayesianOLS:
 
     def prior(self, theta) -> float:
         return sum([
-            i["prior"].logpdf(theta.loc[i["parameters"]]).sum() 
+            i['prior'].logpdf(theta.loc[i['parameters']]).sum() 
             for i in self.param_groups
         ])
 
@@ -31,24 +31,24 @@ class BayesianOLS:
 
     def get_init(self) -> pd.Series:
         return pd.concat([
-            pd.Series(i["prior"].mean(), index=i["parameters"])
+            pd.Series(i['prior'].mean(), index=i['parameters'])
             for i in self.param_groups
         ])
 
     def simulate_draws(self, n_draws=1000, burn_in=0) -> None:
         n = n_draws + burn_in
         init = self.get_init()
-        draws = pd.DataFrame(index=range(n), columns=init.index, dtype="float")
+        draws = pd.DataFrame(index=range(n), columns=init.index, dtype='float')
         draws.loc[0] = init
 
         for i in tqdm(range(1, n), initial=1, total=n):
             prev = draws.loc[i-1].copy()
             for j in self.param_groups:
                 prop = prev.copy()
-                prop.loc[j["parameters"]] = prev.loc[j["parameters"]] + j["proposal"].rvs()
+                prop.loc[j['parameters']] = prev.loc[j['parameters']] + j['proposal'].rvs()
                 log_ratio = self.posterior(prop) - self.posterior(prev)
                 accept = log_ratio > uniform.rvs()
-                draws.loc[i, j["parameters"]] = prop.loc[j["parameters"]] if accept else prev.loc[j["parameters"]]
+                draws.loc[i, j['parameters']] = prop.loc[j['parameters']] if accept else prev.loc[j['parameters']]
         self.draws = draws.loc[burn_in:].reset_index(drop=True)
 
     def predict(self, X) -> pd.DataFrame:
@@ -65,38 +65,38 @@ class BayesianOLS:
 
 
 def train_bayesian_ols():
-    df = pd.read_csv(config["clean_path"], index_col='id')
-    X = df.filter(config["features"])
-    y = df[config["target"]]
+    df = pd.read_csv(config['clean_path'], index_col='id')
+    X = df.filter(config['features'])
+    y = df[config['target']]
 
     param_groups = [
         {
-            "parameters": ['intercept'],
-            "prior": norm(loc=0, scale=1),
-            "proposal": norm(scale=0.01)
+            'parameters': ['intercept'],
+            'prior': norm(loc=0, scale=1),
+            'proposal': norm(scale=0.01)
         },
         {
-            "parameters": ['vote_count', 'popularity', 'runtime'],
-            "prior": norm(loc=0, scale=1),
-            "proposal": norm(scale=[0.01]*3)
+            'parameters': ['vote_count', 'popularity', 'runtime'],
+            'prior': norm(loc=0, scale=1),
+            'proposal': norm(scale=[0.01]*3)
         },
         {
-            "parameters": [
+            'parameters': [
                 'Horror', 'War', 'History',
                 'Dimension Films', 'Dune Entertainment', 'Screen Gems',
                 'United Artists', 'Film4 Productions'
             ],
-            "prior": norm(loc=0, scale=1),
-            "proposal": norm(scale=[0.01]*8)
+            'prior': norm(loc=0, scale=1),
+            'proposal': norm(scale=[0.01]*8)
         },
         {
-            "parameters": ['sigma2'],
-            "prior": gamma(a=1, scale=3),
-            "proposal": norm(scale=0.015)
+            'parameters': ['sigma2'],
+            'prior': gamma(a=1, scale=3),
+            'proposal': norm(scale=0.015)
         }
     ]
 
     bayesian_ols = BayesianOLS(X, y, param_groups)
-    bayesian_ols.simulate_draws(config["n_draws"], config["burn_in"])
+    bayesian_ols.simulate_draws(config['n_draws'], config['burn_in'])
     pred_df = bayesian_ols.predict(X)
     print(pred_df)

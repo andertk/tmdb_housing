@@ -1,20 +1,20 @@
 features:
   - vote_count
-  - popularity
-  - runtime
-  - Horror
-  - War
-  - History
-  - Dimension Films
-  - Dune Entertainment
-  - Screen Gems
-  - United Artists
-  - Film4 Productions
+  # - popularity
+  # - runtime
+  # - Horror
+  # - War
+  # - History
+  # - Dimension Films
+  # - Dune Entertainment
+  # - Screen Gems
+  # - United Artists
+  # - Film4 Productions
 
 target: vote_average
 
 raw_path: data/raw/top_1000_popular_movies_tmdb.csv
 clean_path: data/clean/movies.csv
 
-n_draws: 200
+n_draws: 1000
 burn_in: 10
